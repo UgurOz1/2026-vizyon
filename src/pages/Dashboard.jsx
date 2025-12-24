@@ -5,6 +5,7 @@ import WishCard from '../components/WishCard';
 import AddWish from '../components/AddWish';
 import PartnerConnect from '../components/PartnerConnect';
 import Countdown from '../components/Countdown';
+import TimelineView from '../components/TimelineView';
 import CapsuleList from '../components/CapsuleList';
 import { Plus, HeartHandshake, LogOut, UserPlus, Sparkles, Layout, Sun, Moon, Clock, Hourglass } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';

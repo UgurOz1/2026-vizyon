@@ -23,20 +23,20 @@ export default function TimelineView({ wishes, darkMode }) {
     return (
         <div className="max-w-4xl mx-auto py-8">
             {Object.keys(groupedWishes).map((month, index) => (
-                <div key={index} className="relative pl-8 md:pl-0">
-                    {/* Month Header - Stickyish */}
-                    <div className={` md:absolute md:left-0 md:w-1/2 md:pr-12 md:text-right mb-8 md:mb-0`}>
+                <div key={index} className="relative">
+                    {/* Month Header - Mobile: Top, Desktop: Left Sticky */}
+                    <div className={`mb-6 md:mb-0 md:absolute md:left-0 md:w-1/2 md:pr-12 md:text-right`}>
                         <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${darkMode ? 'bg-slate-800 text-romantic-300' : 'bg-white text-romantic-600 shadow-sm border border-romantic-100'}`}>
                             {month}
                         </span>
                     </div>
 
                     {/* Timeline Content */}
-                    <div className="md:ml-[50%] md:pl-12 border-l-2 border-slate-200/50 dark:border-slate-700/50 pb-12 last:border-0 relative space-y-8">
+                    <div className="pl-6 md:ml-[50%] md:pl-12 border-l-2 border-slate-200/50 dark:border-slate-700/50 pb-12 last:border-0 relative space-y-8 ml-4 md:ml-auto">
                         {groupedWishes[month].map(wish => (
                             <div key={wish.id} className="relative">
                                 {/* Dot on the line */}
-                                <div className={`absolute -left-[55px] md:-left-[55px] top-6 w-4 h-4 rounded-full border-4 transition-colors ${wish.completed ? 'bg-emerald-500 border-emerald-100 dark:border-emerald-900' : 'bg-white dark:bg-slate-900 border-romantic-300'}`}></div>
+                                <div className={`absolute -left-[31px] md:-left-[55px] top-6 w-4 h-4 rounded-full border-4 transition-colors z-10 ${wish.completed ? 'bg-emerald-500 border-emerald-100 dark:border-emerald-900' : 'bg-white dark:bg-slate-900 border-romantic-300'}`}></div>
 
                                 <div className={`p-4 rounded-2xl border transition-all hover:shadow-lg group ${darkMode ? 'bg-slate-800 border-slate-700 hover:border-romantic-500' : 'bg-white border-slate-100 hover:border-romantic-200'}`}>
                                     <div className="flex items-center gap-2 mb-2">

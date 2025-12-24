@@ -143,7 +143,7 @@ export default function CapsuleList({ darkMode, partnerEmail }) {
                                 <span className="text-xs font-bold text-rose-500 uppercase tracking-widest mb-2 block">Gelecekten Mesaj</span>
                                 <h2 className="text-3xl font-serif font-black text-slate-800">{selectedCapsule.title}</h2>
                                 <p className="text-slate-400 text-sm mt-2">
-                                    {new Date(selectedCapsule.createdAt.toDate()).toLocaleDateString()} tarihinde yazıldı.
+                                    {selectedCapsule.createdAt?.toDate ? new Date(selectedCapsule.createdAt.toDate()).toLocaleDateString() : new Date().toLocaleDateString()} tarihinde yazıldı.
                                 </p>
                             </div>
 

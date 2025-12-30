@@ -4,17 +4,20 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDohK_oyIK6l3zWDq8fnqPPG8mu_p8Y-mc",
-    authDomain: "project-3402036684893689390.firebaseapp.com",
-    projectId: "project-3402036684893689390",
-    storageBucket: "project-3402036684893689390.firebasestorage.app",
-    messagingSenderId: "735385506042",
-    appId: "1:735385506042:web:e1cb05eef316cdebe2f943"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// Export VAPID key for notifications
+export const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
 export default app;

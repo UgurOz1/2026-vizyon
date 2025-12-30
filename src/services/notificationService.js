@@ -1,6 +1,6 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { doc, setDoc } from 'firebase/firestore';
-import { db, auth } from './firebaseConfig';
+import { db, auth, VAPID_KEY } from './firebaseConfig';
 import app from './firebaseConfig';
 
 let messaging = null;
@@ -93,7 +93,7 @@ export const getFCMToken = async () => {
         }
 
         const token = await getToken(msg, {
-            vapidKey: 'BKNJPtlt6kd-gICBToGITW-fdgz5RN1IgKxLHnjcIPUt2cWTGlt9kUee0hvtYxjmVnqR38i_VXthCgZGnNKphg8',
+            vapidKey: VAPID_KEY,
             serviceWorkerRegistration: swRegistration
         });
 

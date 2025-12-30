@@ -28,8 +28,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || '2026 Vizyonu';
     const notificationOptions = {
         body: payload.notification?.body || 'Yeni bir bildiriminiz var!',
-        icon: '/icon-192.svg',
-        badge: '/icon-192.svg',
+        icon: '/2026-vizyon/icon-192.svg',
+        badge: '/2026-vizyon/icon-192.svg',
         vibrate: [100, 50, 100],
         data: payload.data,
         actions: [
@@ -48,17 +48,22 @@ self.addEventListener('notificationclick', (event) => {
 
     if (event.action === 'close') return;
 
-    const urlToOpen = event.notification.data?.url || '/';
+    // Use base path for GitHub Pages
+    const basePath = '/2026-vizyon/';
+    const urlToOpen = event.notification.data?.url || basePath;
+    const fullUrl = urlToOpen.startsWith('/') && !urlToOpen.startsWith(basePath)
+        ? basePath + urlToOpen.substring(1)
+        : urlToOpen;
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             for (const client of clientList) {
-                if (client.url.includes(urlToOpen) && 'focus' in client) {
+                if (client.url.includes('2026-vizyon') && 'focus' in client) {
                     return client.focus();
                 }
             }
             if (clients.openWindow) {
-                return clients.openWindow(urlToOpen);
+                return clients.openWindow(fullUrl);
             }
         })
     );

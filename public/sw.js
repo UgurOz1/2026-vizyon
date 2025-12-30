@@ -1,10 +1,11 @@
-const CACHE_NAME = 'vision2026-v1';
+const CACHE_NAME = 'vision2026-v2';
+const BASE_PATH = '/2026-vizyon';
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/icon-192.svg',
-    '/icon-512.svg'
+    BASE_PATH + '/',
+    BASE_PATH + '/index.html',
+    BASE_PATH + '/manifest.json',
+    BASE_PATH + '/icon-192.svg',
+    BASE_PATH + '/icon-512.svg'
 ];
 
 // Install event - cache static assets
@@ -63,7 +64,7 @@ self.addEventListener('fetch', (event) => {
                     }
                     // If no cache, return offline page for navigation requests
                     if (event.request.mode === 'navigate') {
-                        return caches.match('/');
+                        return caches.match(BASE_PATH + '/');
                     }
                     return new Response('Offline', { status: 503 });
                 });
@@ -76,11 +77,11 @@ self.addEventListener('push', (event) => {
     const data = event.data?.json() || {};
     const options = {
         body: data.body || 'Yeni bir güncelleme var!',
-        icon: '/icon-192.svg',
-        badge: '/icon-192.svg',
+        icon: BASE_PATH + '/icon-192.svg',
+        badge: BASE_PATH + '/icon-192.svg',
         vibrate: [100, 50, 100],
         data: {
-            url: data.url || '/'
+            url: data.url || BASE_PATH + '/'
         },
         actions: [
             { action: 'open', title: 'Aç' },
@@ -99,17 +100,19 @@ self.addEventListener('notificationclick', (event) => {
 
     if (event.action === 'close') return;
 
+    const urlToOpen = event.notification.data?.url || BASE_PATH + '/';
+
     event.waitUntil(
         clients.matchAll({ type: 'window' }).then((clientList) => {
             // If a window is already open, focus it
             for (const client of clientList) {
-                if (client.url === event.notification.data.url && 'focus' in client) {
+                if (client.url.includes('2026-vizyon') && 'focus' in client) {
                     return client.focus();
                 }
             }
             // Otherwise, open a new window
             if (clients.openWindow) {
-                return clients.openWindow(event.notification.data.url);
+                return clients.openWindow(urlToOpen);
             }
         })
     );

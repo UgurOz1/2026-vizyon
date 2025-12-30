@@ -7,6 +7,8 @@ import PartnerConnect from '../components/PartnerConnect';
 import Countdown from '../components/Countdown';
 import TimelineView from '../components/TimelineView';
 import CapsuleList from '../components/CapsuleList';
+import NotificationBell from '../components/NotificationBell';
+import InstallPrompt from '../components/InstallPrompt';
 import { Plus, HeartHandshake, LogOut, UserPlus, Sparkles, Layout, Sun, Moon, Clock, Hourglass } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -51,21 +53,37 @@ export default function Dashboard() {
         const user = auth.currentUser;
         if (!user) return false;
 
+        const isOwner = wish.createdBy === user.uid;
+        const isPartnerWish = partnerEmail && wish.authorEmail === partnerEmail;
+
+        // Privacy/Visibility checks
+        // Private wishes: only visible to owner
+        if (wish.visibility === 'private' && !isOwner) {
+            return false;
+        }
+
+        // Surprise wishes: hidden from partner until reveal date
+        if (wish.visibility === 'surprise' && !isOwner) {
+            const revealDate = wish.revealDate ? new Date(wish.revealDate) : null;
+            if (revealDate && revealDate > new Date()) {
+                return false; // Still locked
+            }
+        }
+
         if (filter === 'Timeline') {
-            const isVisible = wish.createdBy === user.uid || (partnerEmail && wish.authorEmail === partnerEmail);
-            return isVisible;
+            return isOwner || isPartnerWish;
         }
 
         if (filter === 'Capsules') return true; // Handled nicely by component itself
 
         if (filter === 'all') {
-            return wish.createdBy === user.uid || (partnerEmail && wish.authorEmail === partnerEmail);
+            return isOwner || isPartnerWish;
         }
-        if (filter === 'My Wishes') return wish.createdBy === user.uid;
-        if (filter === 'Your Wishes') return partnerEmail && wish.authorEmail === partnerEmail;
+        if (filter === 'My Wishes') return isOwner;
+        if (filter === 'Your Wishes') return isPartnerWish;
         if (filter === 'Our Common Goals') {
-            const isVisible = wish.createdBy === user.uid || (partnerEmail && wish.authorEmail === partnerEmail);
-            return isVisible && (wish.isShared === true || (wish.likes && wish.likes.length > 1));
+            const isVisible = isOwner || isPartnerWish;
+            return isVisible && (wish.isShared === true || wish.visibility === 'shared');
         }
         return true;
     });
@@ -129,6 +147,8 @@ export default function Dashboard() {
                             </div>
                             <span className="font-bold text-sm tracking-wide hidden sm:inline">Yeni Ekle</span>
                         </button>
+
+                        <NotificationBell darkMode={darkMode} />
 
                         <button
                             onClick={handleLogout}
@@ -230,6 +250,9 @@ export default function Dashboard() {
                 />
             )}
             {isInviteOpen && <PartnerConnect onClose={() => setIsInviteOpen(false)} onConnect={(email) => setPartnerEmail(email)} />}
+
+            {/* PWA Install Prompt */}
+            <InstallPrompt darkMode={darkMode} />
         </div >
     );
 }

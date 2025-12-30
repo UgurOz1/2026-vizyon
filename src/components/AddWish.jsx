@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Calendar, ArrowRight, AlignLeft } from 'lucide-react';
+import { X, Sparkles, Calendar, ArrowRight, AlignLeft, Lock, Unlock, Gift } from 'lucide-react';
 import { db, auth } from '../services/firebaseConfig';
 import { collection, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
 
@@ -7,7 +7,15 @@ export default function AddWish({ onClose, initialData }) {
     const [title, setTitle] = useState(initialData?.title || '');
     const [description, setDescription] = useState(initialData?.description || '');
     const [targetDate, setTargetDate] = useState(initialData?.targetDate || '');
+    const [visibility, setVisibility] = useState(initialData?.visibility || 'shared');
+    const [revealDate, setRevealDate] = useState(initialData?.revealDate || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const visibilityOptions = [
+        { value: 'shared', label: 'Ortak', icon: Unlock, color: 'text-emerald-500', bg: 'bg-emerald-50', desc: 'Her iki partner görebilir' },
+        { value: 'private', label: 'Özel', icon: Lock, color: 'text-slate-500', bg: 'bg-slate-50', desc: 'Sadece sen görebilirsin' },
+        { value: 'surprise', label: 'Sürpriz', icon: Gift, color: 'text-rose-500', bg: 'bg-rose-50', desc: 'Belirli tarihe kadar gizli' }
+    ];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +34,8 @@ export default function AddWish({ onClose, initialData }) {
                     title,
                     description,
                     targetDate: targetDate || null,
+                    visibility,
+                    revealDate: visibility === 'surprise' ? revealDate : null,
                     updatedAt: serverTimestamp()
                 });
             } else {
@@ -36,13 +46,15 @@ export default function AddWish({ onClose, initialData }) {
                     category: 'Diğer',
                     imageUrl: '',
                     targetDate: targetDate || null,
+                    visibility,
+                    revealDate: visibility === 'surprise' ? revealDate : null,
                     createdBy: userId,
                     authorEmail: userEmail,
                     createdAt: serverTimestamp(),
                     likes: [],
                     type: 'text',
                     comments: [],
-                    isShared: false,
+                    isShared: visibility === 'shared',
                     completed: false
                 });
             }
@@ -126,6 +138,59 @@ export default function AddWish({ onClose, initialData }) {
                                     />
                                 </div>
                             </div>
+
+                            {/* Visibility Selector */}
+                            <div className="bg-slate-50 p-2 rounded-3xl border-2 border-slate-100 transition-all duration-300">
+                                <div className="p-4">
+                                    <label className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-wider mb-3">
+                                        <Lock size={14} className="text-violet-500" />
+                                        <span>Gizlilik</span>
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {visibilityOptions.map((option) => {
+                                            const IconComponent = option.icon;
+                                            const isSelected = visibility === option.value;
+                                            return (
+                                                <button
+                                                    key={option.value}
+                                                    type="button"
+                                                    onClick={() => setVisibility(option.value)}
+                                                    className={`p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1.5 ${isSelected
+                                                            ? `${option.bg} border-current ${option.color} shadow-lg`
+                                                            : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                                                        }`}
+                                                >
+                                                    <IconComponent size={18} />
+                                                    <span className="text-xs font-bold">{option.label}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    <p className="text-xs text-slate-400 mt-2 text-center">
+                                        {visibilityOptions.find(o => o.value === visibility)?.desc}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Reveal Date (only for surprise) */}
+                            {visibility === 'surprise' && (
+                                <div className="bg-rose-50 p-2 rounded-3xl border-2 border-rose-100 focus-within:border-rose-400 focus-within:ring-4 focus-within:ring-rose-50 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
+                                    <div className="p-4 flex flex-col gap-2">
+                                        <label className="flex items-center gap-2 text-xs font-black text-rose-400 uppercase tracking-wider">
+                                            <Gift size={14} className="text-rose-500" />
+                                            <span>Sürpriz Açılma Tarihi</span>
+                                        </label>
+                                        <input
+                                            type="date"
+                                            required
+                                            className="w-full bg-white text-slate-800 font-bold text-lg p-3 rounded-xl border border-rose-200 outline-none focus:border-rose-500 focus:shadow-lg focus:shadow-rose-100 transition-all"
+                                            value={revealDate}
+                                            onChange={e => setRevealDate(e.target.value)}
+                                        />
+                                        <p className="text-xs text-rose-400 mt-1">Bu tarihe kadar partneriniz bu hayali göremez.</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Submit Button - Vibrant & Punchy */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MessageCircle, CheckCircle2, Circle, Sparkles, Lock, ArrowRightLeft, Calendar, Pencil, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, CheckCircle2, Circle, Sparkles, Lock, Unlock, Gift, ArrowRightLeft, Calendar, Pencil, Trash2 } from 'lucide-react';
 import { db, auth } from '../services/firebaseConfig';
 import { doc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import toast from 'react-hot-toast';
@@ -104,11 +104,37 @@ export default function WishCard({ wish, darkMode, isSharedView, onEdit }) {
 
     // Card Styling Logic
     const isOwner = user?.uid === wish.createdBy;
+
+    // Check if surprise reveal date has passed
+    const isSurpriseRevealed = wish.visibility === 'surprise' &&
+        wish.revealDate && new Date(wish.revealDate) <= new Date();
+    const isSurpriseLocked = wish.visibility === 'surprise' &&
+        wish.revealDate && new Date(wish.revealDate) > new Date() && !isOwner;
+
     const cardBaseClass = isCompleted
         ? "opacity-80 grayscale-[0.3] hover:grayscale-0 ring-2 ring-emerald-500/20"
         : darkMode
             ? "bg-slate-900/40 backdrop-blur-md border border-white/5 hover:border-violet-500/30 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]"
             : "bg-white border-slate-100 hover:border-romantic-300 hover:shadow-xl hover:shadow-romantic-100/50";
+
+    // If this is a locked surprise (not the owner and reveal date hasn't passed)
+    if (isSurpriseLocked) {
+        return (
+            <div className={`relative rounded-[2rem] overflow-hidden transition-all duration-300 group flex flex-col h-full ${darkMode ? 'bg-slate-900/40 backdrop-blur-md border border-white/5' : 'bg-white border-slate-100'}`}>
+                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                    <div className={`p-4 rounded-full mb-4 ${darkMode ? 'bg-rose-500/10' : 'bg-rose-50'}`}>
+                        <Gift size={32} className="text-rose-400 animate-pulse" />
+                    </div>
+                    <h3 className={`font-serif text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
+                        Sürpriz Hayal 🎁
+                    </h3>
+                    <p className={`text-sm ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                        Bu hayal <span className="font-bold text-rose-400">{new Date(wish.revealDate).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}</span> tarihinde açılacak!
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={`relative rounded-[2rem] overflow-hidden transition-all duration-300 group flex flex-col h-full hover:-translate-y-2 ${cardBaseClass}`}>
@@ -178,7 +204,26 @@ export default function WishCard({ wish, darkMode, isSharedView, onEdit }) {
 
                 {/* Title Section */}
                 <div className="mb-3">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        {/* Visibility badges */}
+                        {wish.visibility === 'private' && (
+                            <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-500'}`}>
+                                <Lock size={10} />
+                                <span>ÖZEL</span>
+                            </div>
+                        )}
+                        {wish.visibility === 'surprise' && isOwner && !isSurpriseRevealed && (
+                            <div className="bg-gradient-to-r from-rose-400 to-pink-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                <Gift size={10} />
+                                <span>SÜRPRİZ</span>
+                            </div>
+                        )}
+                        {isSurpriseRevealed && (
+                            <div className="bg-gradient-to-r from-emerald-400 to-teal-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                <Gift size={10} />
+                                <span>AÇILDI!</span>
+                            </div>
+                        )}
                         {wish.isShared && (
                             <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                                 <Sparkles size={10} />

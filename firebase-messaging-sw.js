@@ -28,8 +28,8 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || '2026 Vizyonu';
     const notificationOptions = {
         body: payload.notification?.body || 'Yeni bir bildiriminiz var!',
-        icon: '/icon-192.svg',
-        badge: '/icon-192.svg',
+        icon: '/2026-vizyon/icon-192.svg',
+        badge: '/2026-vizyon/icon-192.svg',
         vibrate: [100, 50, 100],
         data: payload.data,
         actions: [

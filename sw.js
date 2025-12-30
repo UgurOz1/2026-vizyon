@@ -1,10 +1,11 @@
-const CACHE_NAME = 'vision2026-v1';
+const CACHE_NAME = 'vision2026-v2';
+const BASE_PATH = '/2026-vizyon';
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/icon-192.svg',
-    '/icon-512.svg'
+    BASE_PATH + '/',
+    BASE_PATH + '/index.html',
+    BASE_PATH + '/manifest.json',
+    BASE_PATH + '/icon-192.svg',
+    BASE_PATH + '/icon-512.svg'
 ];
 
 // Install event - cache static assets

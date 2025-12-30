@@ -1,14 +1,46 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/2026-vizyon/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2026</title>
-    <script type="module" crossorigin src="/2026-vizyon/assets/index-CDTHQg2E.js"></script>
-    <link rel="stylesheet" crossorigin href="/2026-vizyon/assets/index-u8ZNY6Rb.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/2026-vizyon/vite.svg" />
+  <link rel="manifest" href="/2026-vizyon/manifest.json" />
+  <link rel="apple-touch-icon" href="/2026-vizyon/icon-192.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#8b5cf6" />
+  <meta name="description"
+    content="2026 Vizyonu - Birlikte geleceği inşa edin. Çiftler için hedef ve hayal planlayıcı." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="2026" />
+  <title>2026 Vizyonu</title>
+  <script type="module" crossorigin src="/2026-vizyon/assets/index-XxM2F3ug.js"></script>
+  <link rel="stylesheet" crossorigin href="/2026-vizyon/assets/index-D_8nkbda.css">
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    // Register Service Workers for PWA and Firebase Messaging
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          // Detect base path from current URL
+          const basePath = window.location.pathname.includes('/2026-vizyon') ? '/2026-vizyon/' : '/';
+
+          // Register PWA Service Worker
+          const swRegistration = await navigator.serviceWorker.register(basePath + 'sw.js');
+          console.log('PWA SW registered:', swRegistration.scope);
+
+          // Register Firebase Messaging Service Worker
+          const fcmRegistration = await navigator.serviceWorker.register(basePath + 'firebase-messaging-sw.js');
+          console.log('FCM SW registered:', fcmRegistration.scope);
+        } catch (error) {
+          console.log('SW registration failed:', error);
+        }
+      });
+    }
+  </script>
+</body>
+
 </html>

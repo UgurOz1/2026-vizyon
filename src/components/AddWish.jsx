@@ -123,7 +123,6 @@ export default function AddWish({ onClose, initialData }) {
                                         className="w-full bg-white text-slate-800 font-bold text-lg p-3 rounded-xl border border-slate-200 outline-none focus:border-violet-500 focus:shadow-lg focus:shadow-violet-100 transition-all placeholder:text-slate-300"
                                         value={targetDate}
                                         onChange={e => setTargetDate(e.target.value)}
-                                        required
                                     />
                                 </div>
                             </div>
